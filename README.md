@@ -1,4 +1,4 @@
-# GUnit
+# GUnit [![Build Status](https://travis-ci.org/Alig96/GUnit.svg?branch=master)](https://travis-ci.org/Alig96/GUnit)
 GUnit is a Unit Testing framework for Garry's Mod based on [ScalaTest](http://www.scalatest.org/). It is compatible with all addons and gamemodes. It is named after other testing frameworks such as JUnit and NUnit, and [definitely not named after a rap group.](http://tvtropes.org/pmwiki/pmwiki.php/Main/SuspiciouslySpecificDenial)
 
 ## Warning
