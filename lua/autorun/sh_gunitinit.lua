@@ -6,6 +6,7 @@ GUnit.Colors = {}
 GUnit.Generators = {}
 GUnit.Tests = {}
 GUnit.version = "v0.1.0"
+GUnit.travis = false
 
 local enableTests = true
 
@@ -28,4 +29,18 @@ end
 
 hook.Add("Initialize", "__GUnitTestInitialize", function()
   hook.Run("GUnitReady")
+  local exp = string.Explode( ".", GetHostName()  )
+
+  if enableTests and exp[1] == "travis" then
+    print("Running Travis: " .. exp[2])
+    GUnit.travis = true
+    timer.Simple(1,function ()
+      RunConsoleCommand( "test-only", exp[2] )
+      print("Exiting Server in 10 seconds")
+
+      timer.Simple(10,function ()
+        RunConsoleCommand( "_restart" )
+      end)
+    end)
+  end
 end)

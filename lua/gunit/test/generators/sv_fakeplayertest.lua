@@ -32,4 +32,4 @@ end
 playerMockTest:addSpec("not break on creation", generateTest)
 playerMockTest:addSpec("have non-nil SteamIDs", steamIdTest)
 playerMockTest:addSpec("always generate the same SteamID", saneSteamIdTest)
-playerMockTest:addSpec("return a role with GetRole()", roleTest) 
+playerMockTest:addSpec("return a role with GetRole()", roleTest)

@@ -25,30 +25,30 @@ end
 
 local function printResultStats(resultStats)
   if (!resultStats) then return end
-  
+
   local color = nil
-  
+
   if (resultStats.failed == 0) then
     color = Colors.green
   else
     color = Colors.red
   end
-  
+
   local elapsedTime = string.format("Run completed in %.3f seconds", os.clock() - resultStats.startTime) ..
                       os.date(" at %I:%M:%S %p on %A, %B %d, %Y \n")
-                      
+
   local msg = elapsedTime ..
               resultStats.specs .. " spec(s) run in " .. resultStats.projects .. " project(s). " ..
               resultStats.passed .. " passed, " .. resultStats.failed .. " failed, " .. resultStats.pending .. " pending.\n"
-              
+
   if (resultStats.failed != 0) then
     local failedSuiteMessage = "Failed Test Suites:\n"
     for suiteName, numFailed in pairs(resultStats.failedSuites) do
       failedSuiteMessage = failedSuiteMessage .. suiteName .. " - " .. numFailed .. " spec(s) failed.\n"
     end
-    msg = msg .. failedSuiteMessage 
+    msg = msg .. failedSuiteMessage
   end
-  
+
   MsgC(color, msg)
 end
 
@@ -119,7 +119,7 @@ local function runTests(projectName, testName)
   local allResults = {}
   local resultStats = {}
   local testsRan = false
-  
+
   resultStats.startTime = os.clock()
   resultStats.projects = 0
   resultStats.specs = 0
@@ -127,7 +127,7 @@ local function runTests(projectName, testName)
   resultStats.failed = 0
   resultStats.pending = 0
   resultStats.failedSuites = {}
-  
+
   if (projectName == nil) then
     testsRan = runAllTests(resultStats)
   elseif (testName == nil) then
@@ -135,9 +135,15 @@ local function runTests(projectName, testName)
   else
     testsRan = runSingleTest(projectName, testName, resultStats)
   end
-  
+
   if (testsRan) then
     printResultStats(resultStats)
+  end
+
+  --For travis
+  if GUnit.travis == true and resultStats.failed > 0 then
+    print("[GUnit] Writing to file to error the travis build.")
+    file.Write( "gunit-build-status.txt", "false" )
   end
 end
 
