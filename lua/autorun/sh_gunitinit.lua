@@ -29,12 +29,14 @@ end
 
 hook.Add("Initialize", "__GUnitTestInitialize", function()
   hook.Run("GUnitReady")
+
+  --Run Travis
   local exp = string.Explode( ".", GetHostName()  )
 
-  if enableTests and exp[1] == "travis" then
-    print("Running Travis: " .. exp[2])
+  if exp[1] == "travis" then
     GUnit.travis = true
-    timer.Simple(1,function ()
+    timer.Simple(5,function ()
+      print("Running Travis: " .. exp[2])
       RunConsoleCommand( "test-only", exp[2] )
       print("Exiting Server in 10 seconds")
 

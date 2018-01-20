@@ -1,7 +1,7 @@
 --Code for discovering tests in an addon's test directory.
 
 --Removes lua/.. from the working directory path.
---A workaround necessary for some includes. 
+--A workaround necessary for some includes.
 --Notably happens when GUnit tries to load its own tests.
 local function removeLuaStartFromPath(workingDirectory)
   if (string.sub(workingDirectory, 0, 6) == "lua/..") then
@@ -11,7 +11,7 @@ local function removeLuaStartFromPath(workingDirectory)
   end
 end
 
---Parses every instance ".." in the working directory that isn't the firstand removes it, 
+--Parses every instance ".." in the working directory that isn't the firstand removes it,
 --deleting the directory right before it.
 local function applyDoubleDots(workingDirectory)
   local array = workingDirectory:split("/")
@@ -19,7 +19,7 @@ local function applyDoubleDots(workingDirectory)
   for key, value in pairs(array) do
     arraySize = arraySize + 1
   end
-  
+
   local function removeDir(newPath, index)
     if ((index + 1) == arraySize) then return newPath .. "/" end
     if (index == 1) then return removeDir(array[index], index + 1) end
@@ -29,7 +29,7 @@ local function applyDoubleDots(workingDirectory)
       return removeDir(newPath .. "/" .. array[index], index + 1)
     end
   end
-  
+
   local newDir = removeDir("", 1)
   return newDir
 end
@@ -58,27 +58,26 @@ end
 
 local function includeTests(workingDirectory, currentDirectory)
   currentDirectory = currentDirectory or workingDirectory
-  local specPath = currentDirectory .. "*test.lua"
-  local files, _ = file.Find(specPath, "MOD")
-  local _, directories = file.Find(currentDirectory .. "*", "MOD")
-  
+  local files, directories = file.Find(currentDirectory .. "*", "MOD")
+
   if (files) then
-    for index, file in ipairs(files) do
-      local filePath = "../" .. currentDirectory .. file
-      include(filePath)
-      --print("Including " .. filePath)
-      --print("current directory is " .. currentDirectory)
+    for index, currentFile in ipairs(files) do
+      if string.match(currentFile, "test.lua") then
+        local filePath = "../" .. currentDirectory .. currentFile
+        include(filePath)
+        --print("Including " .. filePath)
+      end
     end
   else
-    --print("No testfiles found in " .. currentDirectory)
+    print("No testfiles found in " .. currentDirectory)
   end
-  
+
   if (directories) then
     for index, directory in ipairs(directories) do
       includeTests(workingDirectory, currentDirectory .. directory .. "/")
     end
   else
-    --print("No subdirectories found in " .. currentDirectory)
+    print("No subdirectories found in " .. currentDirectory)
   end
 end
 
@@ -99,4 +98,3 @@ function GUnit.load()
     clearTests(projectName)
     includeTests(getWorkingDirectory())
 end
-  
