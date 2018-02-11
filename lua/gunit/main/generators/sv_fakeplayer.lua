@@ -16,6 +16,10 @@ function fakePlayer:GetName()
   return self.name
 end
 
+function fakePlayer:Nick()
+  return self:GetName()
+end
+
 function fakePlayer:SetName(name)
   self.name = name
 end
